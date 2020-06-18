@@ -1,0 +1,370 @@
+// LCD module connections
+sbit LCD_RS at RB4_bit;
+sbit LCD_EN at RB5_bit;
+sbit LCD_D4 at RB0_bit;
+sbit LCD_D5 at RB1_bit;
+sbit LCD_D6 at RB2_bit;
+sbit LCD_D7 at RB3_bit;
+sbit LCD_RS_Direction at TRISB4_bit;
+sbit LCD_EN_Direction at TRISB5_bit;
+sbit LCD_D4_Direction at TRISB0_bit;
+sbit LCD_D5_Direction at TRISB1_bit;
+sbit LCD_D6_Direction at TRISB2_bit;
+sbit LCD_D7_Direction at TRISB3_bit;
+// End LCD module connections
+char  keypadPort at PORTD;
+unsigned int kp;             //keypad variable
+
+int one; two; three; four; gone; gtwo; gthree; gfour; correct; guesses; prev; count;  cone; ctwo; cthree; cfour; won; out;        //number entered to guess
+
+
+void main()
+{
+ADCON1 = 0b10000110;
+trisa = 0b0000;
+trisb = 0b000000;
+trisd = 0b11111111;
+
+
+ Lcd_Init();                      // LCD display initialization
+ Lcd_Cmd(_LCD_CURSOR_OFF);        // LCD command (cursor off)
+ Lcd_Cmd(_LCD_CLEAR);             // LCD command (clear LCD)
+ count = 0;
+ kp = 0;
+ cone = 0;
+ ctwo = 0;
+ cthree = 0;
+ cfour = 0;
+ correct = 0;
+ guesses = 0;
+ won = 0;
+
+ Lcd_Out(1,1,"Enter Numbers");    //Displays text
+
+while (count < 4)   //loops while counter is less than 4
+{
+while (kp ==0)     //waits for a 1-6 to be pressed
+ {
+ do
+ {
+  kp=Keypad_Key_Click();
+ }
+ while(!kp);
+ switch (kp)
+ {
+      case  1: kp = 49; break; // 1
+     case  2: kp = 50; break; // 2
+      case  3: kp = 51; break; // 3
+     case  4: kp = 0; break; // A
+      case  5: kp = 52; break; // 4
+      case  6: kp = 53; break; // 5
+      case  7: kp = 54; break; // 6
+      case  8: kp = 0; break; // B
+     case  9: kp = 0; break; // 7
+     case 10: kp = 0; break; // 8
+      case 11: kp = 0; break; // 9
+      case 12: kp = 0; break; // C
+      case 13: kp = 0; break; // *
+      case 14: kp = 0; break; // 0
+      case 15: kp = 0; break; // #
+      case 16: kp = 0; break; // D
+ }
+}
+count = count++;   //increase counter by 1
+if (count == 1)    //if counter is 1 does this
+{
+one = kp;             //sets "one" to keypad input
+Lcd_Chr(2,1,one);        //prints "one" on LCD
+kp = 0;                  //sets kp to 0 to go back to top}
+if (count == 2)          //if counter is 2 does this
+{
+two = kp;                //sets two to keypad input
+Lcd_Chr_Cp(two);          //prints two on LCD
+kp = 0;
+}
+if (count == 3 )
+{
+three = kp;
+Lcd_Chr_Cp(three);
+kp = 0;
+}
+if (count == 4)
+{
+four = kp;
+Lcd_Chr_Cp(four);
+kp = 0;
+count = 10;       //ends loop
+}
+}
+
+delay_ms(2000);
+
+
+ //END OF INPUTS
+
+//filler text
+//prev, guesses, current
+
+//START OF GUESSING
+
+
+//guessing the numbers
+
+while (guesses < 15 && won ==0 )
+{
+ LCD_CMD(_LCD_CLEAR);
+ LCD_OUT(1,1,"Guess The Numbers");
+  count = 0;
+
+  //test for guesses
+  while (count < 4)   //loops while counter is less than 4
+{
+             //sets kp to 0
+    while (kp ==0)     //waits for a 1-6 to be pressed
+ {
+ do
+ {
+  kp=Keypad_Key_Click();
+ }
+ while(!kp);
+ switch (kp)
+ {
+      case  1: kp = 49; break; // 1
+     case  2: kp = 50; break; // 2
+      case  3: kp = 51; break; // 3
+     case  4: kp = 0; break; // A
+      case  5: kp = 52; break; // 4
+      case  6: kp = 53; break; // 5
+      case  7: kp = 54; break; // 6
+      case  8: kp = 0; break; // B
+     case  9: kp = 0; break; // 7
+     case 10: kp = 0; break; // 8
+      case 11: kp = 0; break; // 9
+      case 12: kp = 0; break; // C
+      case 13: kp = 0; break; // *
+      case 14: kp = 0; break; // 0
+      case 15: kp = 0; break; // #
+      case 16: kp = 0; break; // D
+ }
+}
+count = count++;   //increase counter by 1
+
+if (count == 1)    //if counter is 1 does this
+{
+gone = kp;             //sets "one" to keypad input
+Lcd_Chr(2,12,gone);        //prints "one" on LCD
+kp = 0;                  //sets kp to 0 to go back to top
+}
+
+if (count == 2)          //if counter is 2 does this
+{
+gtwo = kp;                //sets two to keypad input
+Lcd_Chr_Cp(gtwo);          //prints two on LCD
+kp = 0;
+}
+
+if (count == 3 )           //if counter is 3 do this
+{
+gthree = kp;               //sets gthree to keypad input
+Lcd_Chr_Cp(gthree);        //prints three on LCD
+kp = 0;                     //sets Keypad to 0
+}
+
+if (count == 4)              //if count is 4 do this
+{
+gfour = kp;                  //sets four to keypad
+Lcd_Chr_Cp(gfour);            //prints four on LCD
+kp = 0;                       //sets KP to zero
+count = 10;                 //ends loop
+}
+}
+
+while (1) //testing guessed number 1 against all, once one is correct, sets that entered number to 1 (correct) and breaks so it stops testing
+//the rest
+{
+correct = 0;
+cone = 0;
+ctwo = 0;
+cthree = 0;
+cfour = 0;              //resets correct back to zero
+if (gone == one && cone !=1)   //if guessed 1 is equal to entered 1 and one is not already correct
+{
+        cone = 1;                 //sets 1 to correct
+        correct = correct++;        //increases number correct by 1
+
+        break;           //stops checking one
+
+}
+if (gone == two && ctwo !=1)   //if guessed 1 is equal to entered two and is not already correct
+{
+        ctwo = 1;                 //sets 2 to correct
+        correct = correct++;        //increases number correct by 1
+
+        break;           //stops checking one
+}
+
+if (gone == three && cthree !=1)  //if guessed 1 is equal to three and three isnt correct
+{
+        cthree = 1;               //sets 3 to correct
+        correct = correct++;      //increases correct by 1
+
+         break;                   //stops checking one
+}
+
+if (gone == four && cfour !=1)     //if guessed 1 us equal to entered four and is not already correct
+{
+        cfour  = 1;               //sets 4 to correct
+        correct = correct++;      //increases correct by 1
+
+         break;                   //stops checking one
+ }
+ break;                   //ends while loop for testing number 1
+}
+
+
+while (1) //testing guessed number 2 against all, once one is correct, sets that entered number to 1 (correct) and breaks so it stops testing
+//the rest
+{
+
+if (gtwo == one && cone !=1)   //if guessed = entered 1 and not already correct
+{
+        cone = 1;                 //sets 1 to correct
+        correct = correct++;        //increases number correct by 1
+
+        break;           //stops loop for checking number 2
+
+}
+if (gtwo == two && ctwo !=1)   //if guessed = entered 2 and not already correct
+{
+        ctwo = 1;                 //sets 1 to correct
+        correct = correct++;        //increases number correct by 1
+
+        break;           //stops loop for checking number 2
+}
+
+if (gtwo == three && cthree !=1)    //if guessed = entered 3 and not already correct
+{
+        cthree = 1;                 //sets 3 to correct
+        correct = correct++;        //increases counter by 1
+
+         break;                     //stops checking for two
+}
+
+if (gtwo == four && cfour !=1)      //if guessed 2 = entered 4 and not already correct
+{
+        cfour  = 1;                 //sets 4 to correct
+        correct = correct++;        //increases counter by 1
+
+         break;                     //stops checking for two
+ }
+ break;                   //ends while loop for testing number 2
+}
+
+while (1) //testing guessed number 3 against all, once one is correct, sets that entered number to 1 (correct) and breaks so it stops testing
+//the rest
+{
+if (gthree == one && cone !=1)   //if guessed = entered 1 and not already correct
+{
+        cone = 1;                 //sets 1 to correct
+        correct = correct++;        //increases number correct by 1
+
+        break;           //stops loop for checking number 3
+
+}
+if (gthree == two && ctwo !=1)   //if guessed = entered 2 and not already correct
+{
+        ctwo = 1;                 //sets 2 to correct
+        correct = correct++;        //increases number correct by 1
+
+        break;           //stops loop for checking number 3
+}
+
+if (gthree == three && cthree !=1)   //if guessed = entered 3 and not already correct
+{
+        cthree = 1;                  //sets 3 to correct
+        correct = correct++;         //increases correct by 1
+
+         break;                      //stops checking for 3
+}
+
+if (gthree == four && cfour !=1)     //is guessed = entered and not already correct
+{
+        cfour  = 1;                  //sets 4 to correct
+        correct = correct++;          //increases correct by 1
+
+         break;                       //stops checking for four
+ }
+ break;                   //ends while loop for testing number 1
+}
+
+
+
+while (1) //testing guessed number 4 against all, once one is correct, sets that entered number to 1 (correct) and breaks so it stops testing
+//the rest
+{
+if (gfour == one && cone !=1)   //if guessed = entered 1 and not already correct
+{
+        cone = 1;                 //sets 1 to correct
+        correct = correct++;        //increases number correct by 1
+
+        break;           //stops loop for checking number 4
+
+}
+if (gfour == two && ctwo !=1)   //if guessed = entered 2 and not already correct
+{
+        ctwo = 1;                 //sets 2 to correct
+        correct = correct++;        //increases number correct by 1
+
+        break;           //stops loop for checking number 4
+}
+
+if (gfour == three && cthree !=1)     //if guessed = entered and not already correct
+{
+        cthree = 1;                   //sets three to correct
+        correct = correct++;          //increases counter by 1
+
+         break;                     //stops checking for four
+}
+
+if (gfour == four && cfour !=1)      //if guessed = entered and not already correct
+{
+        cfour  = 1;                  //sets four to correct
+        correct = correct++;         //increases correct by 1
+
+         break;                      //stops checking four
+ }
+ break;                   //ends while loop for testing number 1
+}
+guesses = guesses++;       //increases guesses by 1
+
+if (correct == 0)             //if 0 are correct
+porta = 0b0000;               //0 LED's on
+
+if (correct == 1)             //if 1 is correct
+porta = 0b0001;               //1 LED is on
+
+if (correct == 2)             //if 2 are correct
+porta = 0b0011;               //2 LED's are on
+
+if (correct == 3)             //if 3 are correct
+porta = 0b0111;               //3 LED's are on
+
+if (correct == 4)             //if 4 are correct
+porta = 0b1111;               //4 LED's are on
+
+delay_ms(3000);
+
+if (gone == one && gtwo == two && gthree == three && gfour == four) //if all guessed match the entered numbers in the right order
+{
+won = 1;           //sets variable won to 1
+   Lcd_Cmd(_LCD_CLEAR);     //clears LCD
+   Lcd_Out(1,1,"Player 2 Wins");     //Displays player 2 wins
+}
+if (guesses == 15)                   //if guesses = 15
+{
+Lcd_Cmd(_LCD_CLEAR);                 //clears LCD
+Lcd_Out(1,1,"Player 1 Wins");        //displays player 1 wins
+}
+}
+}
+}
